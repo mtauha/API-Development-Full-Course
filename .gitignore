@@ -1,0 +1,5 @@
+env/src/__pycache__/main.cpython-311.pyc
+Include/
+Lib/
+Scripts/
+env/pyvenv.cfg
