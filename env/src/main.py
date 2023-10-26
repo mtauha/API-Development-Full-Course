@@ -8,6 +8,7 @@ app = FastAPI()
 class Post(BaseModel):
     title: str
     content: str
+    published: bool
 
 
 @app.get("/")
@@ -20,7 +21,7 @@ async def get_post():
 
 @app.post("/creatingposts")
 async def create_posts(post: Post):
-    print(post)
+    print(post.title)
     return {"data":"new_post"}
 
 #* NOTES:
