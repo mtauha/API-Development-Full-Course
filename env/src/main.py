@@ -11,10 +11,15 @@ my_posts = [{"title":"title of post 1", "content":"title of post 1", "id":1},
 
 
 
-def find_id(id):
+def find_post(id):
     for post in my_posts:
         if post['id'] == id:
             return post
+
+def find_index_post(id):
+    for index, post in enumerate(my_posts):
+        if post['id'] == id:
+            return index
 
 
 class Post(BaseModel):
@@ -47,13 +52,24 @@ def get_latest_post():
 
 @app.get("/posts/{id}")
 def get_post(id: int):
-    post = find_id(id=id)
+    post = find_post(id=id)
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"post with id {id} not found")
         # response.status_code = status.HTTP_404_NOT_FOUND
         # return {"status Code":response.status_code}
     print(post)
     return {"post detail": post}
+
+
+
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    index = find_index_post(id)
+    if index == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
+
+    my_posts.pop(index)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 #* NOTES:
 
