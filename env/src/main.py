@@ -41,17 +41,17 @@ async def get_posts():
 async def create_posts(post: Post):
     post_dict = post.dict()
     post_dict['id'] = randrange(0, 10000000000)
-    #my_posts.append(post_dict)
+    my_posts.append(post_dict)
     return {"data":my_posts}
 
 
 @app.get("/posts/latest")
-def get_latest_post():
+async def get_latest_post():
     return {"post detail": my_posts[len(my_posts) - 1]}
 
 
 @app.get("/posts/{id}")
-def get_post(id: int):
+async def get_post(id: int):
     post = find_post(id=id)
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"post with id {id} not found")
@@ -63,13 +63,28 @@ def get_post(id: int):
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int):
+async def delete_post(id: int):
     index = find_index_post(id)
     if index == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
 
     my_posts.pop(index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.put("/posts/{id}", status_code=status.HTTP_200_OK)
+async def update_post(id: int, post: Post):
+    index = find_index_post(id=id)
+    if index == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
+
+    post_dict = post.dict()
+    post_dict['id'] = id
+
+    my_posts[index] = post_dict
+
+    return {"update": post_dict}
+
 
 #* NOTES:
 
