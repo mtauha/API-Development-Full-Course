@@ -122,4 +122,4 @@ async def update_post(id: int, post: Post):
 # @app.get("/") -> Decorator
 # 'async' -> ASynchronous keyword used for methods that invloves time factor like APIs and stuf (It is not necessary code will work without it just fine).
 
-# Resume Video From  2:26:47
+# Resume Video From  4:24:55
