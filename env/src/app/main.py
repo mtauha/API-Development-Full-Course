@@ -92,11 +92,14 @@ async def get_post(id: int):
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(id: int):
-    index = find_index_post(id)
-    if index == None:
+    cursor.execute("""DELETE FROM "Posts" WHERE id = %s RETURNING *""", (str(id)))
+    post = cursor.fetchall()
+
+    if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
 
-    my_posts.pop(index)
+    connection.commit()
+
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
