@@ -3,13 +3,22 @@ from fastapi.params import Body
 from pydantic import BaseModel
 from typing import Optional
 from random import randrange
+import psycopg2
+from psycopg2.extras import RealDictCursor 
 
 
 app = FastAPI()
 my_posts = [{"title":"title of post 1", "content":"title of post 1", "id":1},
             {"title":"Favourite Places", "content":"Istanbul", "id":2}]
 
+try:
+    connection = psycopg2.connect(host="localhost",database='fastapi',user="postgres",password="root", cursor_factory=RealDictCursor)
+    cursor = connection.cursor()
+    print("Connected Successfully!")
 
+except Exception as error:
+    print("Connection Failed")
+    print("Error: ", error)
 
 def find_post(id):
     for post in my_posts:
