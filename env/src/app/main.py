@@ -19,6 +19,7 @@ app = FastAPI()
 my_posts = [{"title":"title of post 1", "content":"title of post 1", "id":1},
             {"title":"Favourite Places", "content":"Istanbul", "id":2}]
 
+condition = False
 while condition == False:
     try:
         connection = psycopg2.connect(host=host, database=database, user=user, password=password, cursor_factory=RealDictCursor)
@@ -61,10 +62,12 @@ async def get_posts():
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 async def create_posts(post: Post):
-    post_dict = post.dict()
-    post_dict['id'] = randrange(0, 10000000000)
-    my_posts.append(post_dict)
-    return {"data":my_posts}
+    cursor.execute("""INSERT INTO "Posts"(title, content) VALUES(%s,%s,%s) RETURNING * """,(post.title, post.content, post.published))
+
+    post = cursor.fetchone()
+    connection.commit()
+    
+    return {"data": post}
 
 
 @app.get("/posts/latest")
