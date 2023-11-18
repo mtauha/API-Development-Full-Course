@@ -19,8 +19,6 @@ app = FastAPI()
 my_posts = [{"title":"title of post 1", "content":"title of post 1", "id":1},
             {"title":"Favourite Places", "content":"Istanbul", "id":2}]
 
-
-condition = False
 while condition == False:
     try:
         connection = psycopg2.connect(host=host, database=database, user=user, password=password, cursor_factory=RealDictCursor)
