@@ -66,13 +66,15 @@ async def create_posts(post: Post):
 
     post = cursor.fetchone()
     connection.commit()
-    
+
     return {"data": post}
 
 
 @app.get("/posts/latest")
 async def get_latest_post():
-    return {"post detail": my_posts[len(my_posts) - 1]}
+    cursor.execute("""SELECT * FROM "Posts" ORDER BY id DESC LIMIT 1""")
+    post = cursor.fetchone()
+    return {"post detail": post}
 
 
 @app.get("/posts/{id}")
