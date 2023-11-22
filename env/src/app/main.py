@@ -62,7 +62,7 @@ async def get_posts():
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 async def create_posts(post: Post):
-    cursor.execute("""INSERT INTO "Posts"(title, content) VALUES(%s,%s,%s) RETURNING * """,(post.title, post.content, post.published))
+    cursor.execute("""INSERT INTO "Posts"(title, content, published) VALUES(%s,%s,%s) RETURNING * """,(post.title, post.content, post.published))
 
     post = cursor.fetchone()
     connection.commit()
@@ -106,16 +106,16 @@ async def delete_post(id: int):
 @app.put("/posts/{id}", status_code=status.HTTP_200_OK)
 async def update_post(id: int, post: Post):
     cursor.execute("""UPDATE "Posts" SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *""", (str(post.title), post.content, post.published, str(id)))
-    index = find_index_post(id=id)
-    if index == None:
+
+    post = cursor.fetchall()
+    connection.commit()
+
+    if post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
 
-    post_dict = post.dict()
-    post_dict['id'] = id
 
-    my_posts[index] = post_dict
 
-    return {"update": post_dict}
+    return {"update": post}
 
 
 #* NOTES:
