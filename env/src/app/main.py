@@ -108,12 +108,12 @@ async def update_post(id: int, post: Post):
     cursor.execute("""UPDATE "Posts" SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *""", (str(post.title), post.content, post.published, str(id)))
 
     post = cursor.fetchall()
-    connection.commit()
 
-    if post == None:
+    if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Post with id {id} not found")
 
-
+    
+    connection.commit()
 
     return {"update": post}
 
